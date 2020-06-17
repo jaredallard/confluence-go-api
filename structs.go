@@ -22,14 +22,23 @@ type Results struct {
 
 // Content specifies content properties
 type Content struct {
-	ID        string     `json:"id,omitempty"`
-	Type      string     `json:"type,omitempty"`
-	Status    string     `json:"status,omitempty"`
-	Title     string     `json:"title,omitempty"`
-	Ancestors []Ancestor `json:"ancestors"`
-	Body      Body       `json:"body"`
-	Version   Version    `json:"version"`
-	Space     Space      `json:"space"`
+	ID        string          `json:"id,omitempty"`
+	Type      string          `json:"type,omitempty"`
+	Status    string          `json:"status,omitempty"`
+	Title     string          `json:"title,omitempty"`
+	Ancestors []Ancestor      `json:"ancestors"`
+	Body      Body            `json:"body"`
+	Version   Version         `json:"version"`
+	Space     Space           `json:"space"`
+	Metadata  ContentMetadata `json:"metadata"`
+}
+
+type ContentMetadata struct {
+	Properties map[string]Property `json:"properties"`
+}
+
+type Property struct {
+	Value interface{} `json:"value"`
 }
 
 // Ancestor defines ancestors to create sub pages
@@ -39,8 +48,8 @@ type Ancestor struct {
 
 // Body holds the storage information
 type Body struct {
-	Storage Storage `json:"storage,omitempty"`
-	View    Storage `json:"view,omitempty"`
+	Storage *Storage `json:"storage,omitempty"`
+	View    *Storage `json:"view,omitempty"`
 }
 
 // Storage defines the storage information
@@ -87,6 +96,13 @@ type User struct {
 	UserKey     string `json:"userKey"`
 	AccountID   string `json:"accountId"`
 	DisplayName string `json:"displayName"`
+}
+
+type Child struct {
+	Results []Content
+	Start   int `json:"start,omitempty"`
+	Limit   int `json:"limit,omitempty"`
+	Size    int `json:"size,omitempty"`
 }
 
 // Search results

@@ -1,6 +1,7 @@
 package goconfluence
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -56,17 +57,18 @@ func (a *API) Request(req *http.Request) ([]byte, error) {
 // SendContentRequest sends content related requests
 // this function is used for getting, updating and deleting content
 func (a *API) SendContentRequest(ep *url.URL, method string, c *Content) (*Content, error) {
-
-	var body io.Reader
+	var body []byte
 	if c != nil {
-		js, err := json.Marshal(c)
+		var err error
+		body, err = json.MarshalIndent(c, "", "  ")
 		if err != nil {
 			return nil, err
 		}
-		body = strings.NewReader(string(js))
 	}
 
-	req, err := http.NewRequest(method, ep.String(), body)
+	//fmt.Println(string(body))
+
+	req, err := http.NewRequest(method, ep.String(), bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
@@ -134,6 +136,27 @@ func (a *API) SendSearchRequest(ep *url.URL, method string) (*Search, error) {
 	}
 
 	return &search, nil
+}
+
+// SendSearchRequest sends search related requests
+func (a *API) SendChildRequest(ep *url.URL, method string) (*Child, error) {
+	req, err := http.NewRequest(method, ep.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := a.Request(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var c Child
+	err = json.Unmarshal(res, &c)
+	if err != nil {
+		return nil, err
+	}
+
+	return &c, nil
 }
 
 // SendHistoryRequest requests history
