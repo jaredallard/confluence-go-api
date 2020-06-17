@@ -50,7 +50,7 @@ func (a *API) Request(req *http.Request) ([]byte, error) {
 		return nil, fmt.Errorf("conflict: %s", resp.Status)
 	}
 
-	return nil, fmt.Errorf("unknown response status: %s: %v", resp.Status, res)
+	return nil, fmt.Errorf("unknown response status: %s: %v", resp.Status, string(res))
 }
 
 // SendContentRequest sends content related requests
